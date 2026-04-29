@@ -45,7 +45,7 @@ app.post('/signup', async (req, res) =>{
          res.send("User Successfully saved the data!")
       }
       catch(err){
-            res.status(400).send("Erro saving the user:"  + err.meesage);
+            res.status(400).send("Error saving the user:"  + err.meesage);
       }
       
 })
