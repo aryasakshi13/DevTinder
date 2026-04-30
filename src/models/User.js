@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema({
    password: {
     type: String,
     minLength: 8 ,
-    maxLength: 20,
+    maxLength: 100,
     required: true,
     validate(value){
         if(!validator.isStrongPassword(value)){
@@ -45,7 +45,7 @@ const userSchema = mongoose.Schema({
                 throw new Error("Gender data is not valid");
             }
         },
-        required:true,
+        
        
     },
     about: {

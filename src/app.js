@@ -3,7 +3,8 @@
   const connectdb = require("./config/database");
   const User = require('./models/User');
   const { model } = require('mongoose');
-  const ValidationUser = require("./utills/Validation")
+  const ValidationUser = require("./utills/Validation");
+  const bcrypt = require('bcrypt');
    
 
 //    app.use("/user", (req, res)=>{
@@ -45,8 +46,10 @@ app.post('/signup', async (req, res) =>{
     // Validate the data 
        ValidationUser(req);
 
+       const {firstName, lastName, emailId, password} = req.body ;
+
     // Encrypt thr password
-      const {password} = req.body ;
+      
 
       const hashPassword = await bcrypt.hash(password, 10);
       console.log(hashPassword);
@@ -65,6 +68,25 @@ app.post('/signup', async (req, res) =>{
             res.status(400).send("Error saving the user:"  + err.message);
       }
       
+})
+
+app.post("/login", async(req, res) =>{
+    const{emailId, password} = req.body ;
+
+    const user = await User.findOne({emailId :emailId})
+
+    if(!user){
+        throw new Error("Invalid User");
+    }
+
+    const passwordMatch  = await bcrypt.compare(password, user.password)
+    if(passwordMatch){
+        res.send("User login Successully")
+
+    }
+    else{
+        throw new Error("Invalid Credential");
+    }
 })
 
 app.get("/user", async(req, res) =>{
