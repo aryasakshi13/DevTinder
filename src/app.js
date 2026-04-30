@@ -1,8 +1,9 @@
   const express = require('express');
-   const app = express();
+  const app = express();
   const connectdb = require("./config/database");
-   const User = require('./models/User');
-const { model } = require('mongoose');
+  const User = require('./models/User');
+  const { model } = require('mongoose');
+  const ValidationUser = require("./utills/Validation")
    
 
 //    app.use("/user", (req, res)=>{
@@ -39,13 +40,29 @@ app.post('/signup', async (req, res) =>{
 
    //    });
 
-   const user = new User(req.body);
-      try{
+   try{
+
+    // Validate the data 
+       ValidationUser(req);
+
+    // Encrypt thr password
+      const {password} = req.body ;
+
+      const hashPassword = await bcrypt.hash(password, 10);
+      console.log(hashPassword);
+
+    const user = new User({
+        firstName,
+        lastName,
+        emailId,
+        password: hashPassword
+    });
+      
           await user.save();
          res.send("User Successfully saved the data!")
       }
       catch(err){
-            res.status(400).send("Error saving the user:"  + err.meesage);
+            res.status(400).send("Error saving the user:"  + err.message);
       }
       
 })
@@ -55,7 +72,7 @@ app.get("/user", async(req, res) =>{
     const userEmail = req.body.emailId ;
    try{
         const users = await User.find({emailId : userEmail})
-        if(users.length=== 0){
+        if(users.length === 0){
          res.status(400).send("User not found")
         }
         else{
@@ -94,19 +111,33 @@ app.delete("/user",async (req,res) =>{
         res.status(400).send("Something has Wrong ")
     }
 })
-app.patch("/user",async (req, res) =>{
-    const userId = req.body.userId; 
+app.patch("/user/:userId",async (req, res) =>{
+    const userId = req.params?.userId; 
     const data = req.body ; 
     try{
+        const allowed_update = [
+            "skills",
+            "age",
+             "about",
+             "gender",
+             "password"
+        ]
+
+        const isAllowedUpdate = Object.keys(data).every((k)=>
+        allowed_update.includes(k)
+    );
+     if(!isAllowedUpdate){
+        throw new Error("Update not allowed");
+     }
         const userUpdate = await User.findByIdAndUpdate(userId, data,{
         returnDocument:'after', 
         runValidators : true,
     } );
-       consosle.log(userUpdate);
+       console.log(userUpdate);
        res.send("User updated Successfully");
 
     } catch(err){
-        res.send(400).send("Something went wrong")
+        res.send(400).send(err.message)
     }
     
 });
