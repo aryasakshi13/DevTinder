@@ -58,6 +58,13 @@ const userSchema = mongoose.Schema({
          type: [String],
     },
 
+    resetpasswordToken: {
+        type : String, 
+    },
+   resetPasswordExpires: {
+        type: Date,
+   },
+
 },{timestamps:true});
 
     userSchema.methods.getJwt = async function (){

@@ -14,8 +14,29 @@ const ValidationUser = (req) =>{
      throw new Error("Please Enter a Strong Password");
      
    }
-
  
 };
 
-module.exports = ValidationUser ; 
+const validateEditProfile = (req) =>{
+  
+   const AllowUpdate = [
+    "firstName", 
+    "lastName",
+    "age", 
+    "skills",
+     "Gender", 
+     "Profile"
+    ]
+    
+    const updates = Object.keys(req.body)
+    const isAllowed = update.every(field =>{
+           AllowUpdate.includes(field);
+    });
+
+    return isAllowed ; 
+}
+
+module.exports ={
+ ValidationUser ,
+ validateEditProfile
+};
