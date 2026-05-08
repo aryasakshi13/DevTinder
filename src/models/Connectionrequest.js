@@ -1,0 +1,34 @@
+
+const mongoose = require('mongoose');
+const ConnectionRequestSchema = new mongoose.Schema({
+     
+    fromUserId :{
+        type : mongoose.Schema.Types.ObjectId,
+    },
+    toUserId :{
+        type : mongoose.Schema.Types.ObjectId,
+    },
+    
+    status: {
+        type : String,
+        enum: {
+        values: ['interested','ignored'],
+        message: '{VALUE} is not supported'
+       }
+    }
+ 
+},{timestamps: true}) ;
+
+
+ConnectionRequestSchema.pre('save', async function(next){
+    const connectionRequest = this ;
+
+    if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
+        return new Error("Can't send this request to yourself!");
+    }
+    
+});
+
+const ConnectionRequestModel = new mongoose.model("ConnectionRequest", ConnectionRequestSchema );
+
+module.exports = ConnectionRequestModel;

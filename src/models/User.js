@@ -8,11 +8,9 @@ const userSchema = mongoose.Schema({
     minLength: 4,
     maxLength: 50,
     required: true 
-    
    },
     lastName: {
-      type: String
-      
+      type: String,
    },
    emailId: {
       type: String,
@@ -67,6 +65,8 @@ const userSchema = mongoose.Schema({
 
 },{timestamps:true});
 
+    userSchema.index({firstName:1, lastName:1})
+
     userSchema.methods.getJwt = async function (){
          const user = this ;
          const token = await jwt.sign({_id: user._id}, "DevTinder@3112", {
@@ -85,6 +85,20 @@ const userSchema = mongoose.Schema({
 
         return isPasswordValid ;
     }
+
+    // userSchema.methods.createPasswordResetToken = function(){
+    //     const crypto = require("crypto");
+
+    //     const resetToken = crypto.randomBytes(32).toString("hex");
+       
+    //     this.resetPasswordToken = crypto
+    //          .createHash("sha256")
+    //          .update(resetToken)
+    //          .digest("hex");
+            
+    //     this.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
+    //     return resetToken;
+    // }
 
 const User = mongoose.model("User", userSchema)
     module.exports = User ;

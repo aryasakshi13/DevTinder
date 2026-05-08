@@ -4,7 +4,7 @@ const  {ValidationUser} = require("../utills/Validation");
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
-
+const crypto = require("crypto");
 
 
 authRouter.post('/signup', async (req, res) =>{
@@ -80,4 +80,36 @@ authRouter.post("/logout", (req,res) =>{
 });
 
 
-module.exports = authRouter;
+// authRouter.post("/forgotPassword",(req, res) =>{
+
+//    try{ 
+
+//             const {emailId} = req.body ;
+//             const user = await User.findOne({emailId :emailId});
+            
+//             if(!user){
+//                 return res.status(400).json({message: "There is no user that email address."});
+//             }
+//             const token = user.createPasswordResetToken();
+            
+//             await user.save({validateBeforeSave: false});
+
+//             const resetUrl = `${req.protocol}://${req.get("host")}/api/v1/auth/resetPassword/${resetToken}`
+
+//             console.log("Reset Link:" , resetURL);
+
+//             res.status(200).json({
+//                 status:"Success",
+//                 message: "Token sent to email!(check your console for the link)",
+//             });
+
+//     }catch(err){            
+//          res.status(400).send("ERROR:" + err.message);
+//     }
+  
+
+//  });
+
+
+ module.exports = authRouter;
+
