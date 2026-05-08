@@ -56,4 +56,29 @@ async(req, res) =>{
     }
 })
 
+requestRouter.post('/request/review/:status/:requestId', authUser, async(req, res)=>{
+    
+    try{
+
+    const {requestid, status}  = req.params;
+    const loggedInUser = req.user.id ;
+
+    const allowedStatus = ['accepted', 'rejected'];
+
+       if(!allowedStatus.includes(status)){
+        return res.status(400).send("Status is invalid");
+
+        }
+
+
+    }catch(err){
+        res.status(400).send("ERROR: "+ err.message)
+    }
+    
+
+
+
+})
+
+
 module.exports = requestRouter;
