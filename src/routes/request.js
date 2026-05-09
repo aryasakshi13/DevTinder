@@ -47,7 +47,7 @@ async(req, res) =>{
         const data = await connectionRequest.save(); 
 
          res.json({
-            message:  req.user.firstName + "is" + status + "on" + req.toUserId.firstName ,
+            message:  req.user.firstName + " is " + status + " in " + toUser.firstName,
             data,
          });
     
@@ -60,15 +60,33 @@ requestRouter.post('/request/review/:status/:requestId', authUser, async(req, re
     
     try{
 
-    const {requestid, status}  = req.params;
-    const loggedInUser = req.user.id ;
+    const {requestId, status}  = req.params;
+    const loggedInUser = req.user._id;
 
     const allowedStatus = ['accepted', 'rejected'];
 
        if(!allowedStatus.includes(status)){
         return res.status(400).send("Status is invalid");
+     }
 
-        }
+
+     const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestId,
+             toUserId: loggedInUser,
+             status: "interested",
+
+     });
+
+    if(!connectionRequest){
+        return res.status(400).send("User Not Found");
+    }
+
+    connectionRequest.status = status ;
+    const data = await connectionRequest.save();
+
+    return res.json({message: "connection request " + status,
+        data
+     })
 
 
     }catch(err){
